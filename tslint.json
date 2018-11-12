@@ -1,0 +1,8 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+    "no-console": false,
+    "max-classes-per-file": [true, 20],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"]
+  }
+}
