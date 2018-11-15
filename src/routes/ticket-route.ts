@@ -1,71 +1,56 @@
-import {Router} from "express";
-import {INTERNAL_SERVER_ERROR, OK} from "http-status-codes";
-import { CustomError } from "../models/CustomError";
+import * as errorHandler from "errorhandler";
+import { Router } from "express";
+import { Server } from "http";
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR, OK, SERVICE_UNAVAILABLE, UNPROCESSABLE_ENTITY } from "http-status-codes";
 import { TicketModel } from "../models/index";
-
 const TicketRoute: Router = Router();
-
-TicketRoute.post("/", async (req, res) => {
+TicketRoute.post("/", async (req, res, next) => {
   try {
     const result = await TicketModel.create(req.body);
-    res.status(OK);
-    res.json(result);
-    console.log("aqui1");
+    res.status(OK).json(result);
   } catch (err) {
-    console.log("aqui2");
-    res.status(INTERNAL_SERVER_ERROR);
-    res.json(CustomError.build(INTERNAL_SERVER_ERROR, "Erro ao inserir .", err));
+    res.status(UNPROCESSABLE_ENTITY).json(err);
+    next(err);
   }
 });
-
-TicketRoute.get("/:id", async (req, res) => {
+TicketRoute.get("/:id", async (req, res, next) => {
   try {
-    const ticket = await TicketModel.findById(req.params.id);
-    res.status(OK);
-    res.json(ticket);
-
+    const result = await TicketModel.findById(req.params.id);
+    res.status(OK).json(result);
   } catch (err) {
-    res.status(INTERNAL_SERVER_ERROR);
-    res.json(CustomError.build(INTERNAL_SERVER_ERROR, "Erro ao obter por id.", err));
+    res.status(UNPROCESSABLE_ENTITY).json(err);
+    next(err);
   }
 });
-
-TicketRoute.put("/:id", async (req, res) => {
+TicketRoute.get("/", async (req, res, next) => {
+  try {
+    const results = await TicketModel.find({});
+    res.status(OK).json(results);
+  } catch (err) {
+    res.status(UNPROCESSABLE_ENTITY).json(err);
+    next(err);
+  }
+});
+TicketRoute.put("/:id", async (req, res, next) => {
   try {
     const result = await TicketModel.findOneAndUpdate({
       _id: req.params.id,
     }, req.body);
-
-    res.status(OK);
-    res.json(result);
-
+    res.status(OK).json(result);
   } catch (err) {
-    res.status(INTERNAL_SERVER_ERROR);
-    res.json(CustomError.build(INTERNAL_SERVER_ERROR, "Erro ao atualizar por id.", err));
+    res.status(UNPROCESSABLE_ENTITY).json(err);
+    next(err);
   }
 });
-
-TicketRoute.delete("/:id", async (req, res) => {
+TicketRoute.delete("/:id", async (req, res, next) => {
   try {
     const result = await TicketModel.findByIdAndRemove({
       _id: req.params.id,
     });
-    res.status(OK);
-    res.json(result);
-
+    res.status(OK).json(result);
   } catch (err) {
-    res.status(INTERNAL_SERVER_ERROR);
-    res.json(CustomError.build(INTERNAL_SERVER_ERROR, "Erro ao remover por id.", err));
+    res.status(UNPROCESSABLE_ENTITY).json(err);
+    next(err);
   }
 });
-
-TicketRoute.get("/", async (req, res) => {
-
-  const results = await TicketModel.find({});
-
-  res.status(OK);
-  res.json(results);
-
-});
-
 export default TicketRoute;

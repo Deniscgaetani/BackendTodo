@@ -2,6 +2,7 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import * as errorHandler from "errorhandler";
 import * as express from "express";
+import * as helmet from "helmet";
 import {Server} from "http";
 import * as logger from "morgan";
 import * as homeController from "./controllers/home";
@@ -16,8 +17,18 @@ const options: cors.CorsOptions = {
   methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
   preflightContinue: false,
 };
+// use Helmet
+app.use(helmet());
+// At a minimum, disable X-Powered-By header if helmet dont works
+app.disable("x-powered-by");
 // use cors middleware
 app.use(cors(options));
+// error handling middleware
+app.use(errorHandler());
+
+/* app.use(function(err: any, req: any, res: any, next: any) {
+console.log("errandiar", err);
+}); */
 // Express configuration
 app.set("port", process.env.PORT || 8080);
 app.use((err: any, req: any, res: any, next: any) => {
@@ -25,7 +36,6 @@ app.use((err: any, req: any, res: any, next: any) => {
 });
 app.use(logger("dev"));
 app.use(bodyParser.json());
-app.use(errorHandler());
 app.use(bodyParser.urlencoded({extended: true}));
 /**
  * Primary app routes.
