@@ -20,7 +20,12 @@ TicketRoute.get("/:id", async (req, res, next) => {
       return res.json("user U001 found");
   }
     const result = await TicketModel.findById(req.params.id);
-    res.status(OK).json(result);
+    if (result === null) {
+      res.status(UNPROCESSABLE_ENTITY)
+      .json("resultado não encontrado, verifique se a url esta correta.");
+    } else {
+      res.status(OK).json(result);
+    }
   } catch (err) {
     res.status(UNPROCESSABLE_ENTITY).json(err);
     next(err);
@@ -40,7 +45,12 @@ TicketRoute.put("/:id", async (req, res, next) => {
     const result = await TicketModel.findOneAndUpdate({
       _id: req.params.id,
     }, req.body);
-    res.status(OK).json(result);
+    if (result === null) {
+      res.status(UNPROCESSABLE_ENTITY)
+      .json("resultado não encontrado, verifique se a url esta correta.");
+    } else {
+      res.status(OK).json(result);
+    }
   } catch (err) {
     res.status(UNPROCESSABLE_ENTITY).json(err);
     next(err);
@@ -51,7 +61,12 @@ TicketRoute.delete("/:id", async (req, res, next) => {
     const result = await TicketModel.findByIdAndRemove({
       _id: req.params.id,
     });
-    res.status(OK).json(result);
+    if (result === null) {
+      res.status(UNPROCESSABLE_ENTITY)
+      .json("resultado não encontrado, verifique se a url esta correta.");
+    } else {
+      res.status(OK).json(result);
+    }
   } catch (err) {
     res.status(UNPROCESSABLE_ENTITY).json(err);
     next(err);
