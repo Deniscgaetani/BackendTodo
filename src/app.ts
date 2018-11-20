@@ -43,7 +43,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 // app.post("/login", (req, res, next)=>{});
 app.get("/", homeController.index);
 app.use("/api/v1/ticket", TicketRoute);
-
 // enable pre-flight
 app.options("*", cors(options));
 /**
