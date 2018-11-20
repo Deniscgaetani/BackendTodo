@@ -13,6 +13,8 @@ I started doing this Back-end service for the purpose of training.
 
 ## Install
 
+`git clone https://github.com/Deniscgaetani/BackendTodo.git`
+
 `npm install`
 
 ## Testing
