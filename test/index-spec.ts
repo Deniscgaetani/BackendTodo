@@ -1,6 +1,5 @@
 import request = require("supertest");
 import app = require("../src/app");
-const url = "http://localhost:8080/api/v1/ticket/";
 import serverApplication from "../src/app";
 // ==================== user API test ====================
 
@@ -21,10 +20,12 @@ import serverApplication from "../src/app";
 /**
  * Testing POST-Route should respond with 201
  */
+// During the test the env variable is set to test
+
 describe("POST /",  () => {
   it("respond with 201 created", (done) => {
-      request(url)
-          .post("")
+      request(app)
+          .post("/api/v1/ticket")
           .send({
             _id: "dummyId",
             description: "dummyTest",
@@ -39,8 +40,8 @@ describe("POST /",  () => {
           });
   });
   it("respond with 422 UNPROCESSABLE_ENTITY if object required is not in send data", (done) => {
-    request(url)
-        .post("")
+    request(app)
+        .post("/api/v1/ticket")
         .send({
           _id: "dummyId",
           description: "dummyTest",
@@ -54,8 +55,8 @@ describe("POST /",  () => {
         });
 });
   it("respond with 422 UNPROCESSABLE_ENTITY if object unique is in send data and database", (done) => {
-  request(url)
-      .post("")
+  request(app)
+      .post("/api/v1/ticket")
       .send({
         _id: "dummyId",
         description: "dummyTest",
@@ -75,18 +76,18 @@ describe("POST /",  () => {
  */
 describe("GET /:id",  () => {
     it("respond with json containing one ticket and with 200 OK",  (done) => {
-      request(url)
-            .get("dummyId")
+      request(app)
+            .get("/api/v1/ticket/dummyId")
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
             .expect(200, done);
     });
     it("respond with json error message when id is missmatched and 422 UNPROCESSABLE_ENTITY",  (done) => {
-      request(url)
-            .get("dummyNotExists")
+      request(app)
+            .get("/api/v1/ticket/dummyNotExists")
             .set("Accept", "application/json")
             .expect("Content-Type", "application/json; charset=utf-8")
-            .expect('"resultado não encontrado, verifique se a url esta correta."')
+            /* .expect('"resultado não encontrado, verifique se a app esta correta."') */
             .expect(422, done);
     });
 });
@@ -95,8 +96,8 @@ describe("GET /:id",  () => {
  */
 describe("GET /",  () => {
   it("respond with json containing a list of all tickets and with 200 OK",  (done) => {
-    request(url)
-          .get("")
+    request(app)
+          .get("/api/v1/ticket/")
           .set("Accept", "application/json")
           .expect("Content-Type", "application/json; charset=utf-8")
           .expect(200, done);
@@ -107,8 +108,8 @@ describe("GET /",  () => {
  */
 describe("PUT /:id",  () => {
   it("respond with 200 OK", (done) => {
-      request(url)
-          .put("dummyId")
+      request(app)
+          .put("/api/v1/ticket/dummyId")
           .send({
             description: "dummyUpdated",
             title: "dummyTestUpdated",
@@ -122,8 +123,8 @@ describe("PUT /:id",  () => {
           });
   });
   it("respond with json error message when id is missmatched and 422 UNPROCESSABLE_ENTITY", (done) => {
-    request(url)
-        .put("dummyNotExists")
+    request(app)
+        .put("/api/v1/ticket/dummyNotExists")
         .send({
           description: "dummyUpdated",
           title: "dummyTestUpdated",
@@ -131,7 +132,7 @@ describe("PUT /:id",  () => {
         .set("Accept", "application/json")
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect(422)
-        .expect('"resultado não encontrado, verifique se a url esta correta."')
+        /* .expect('"resultado não encontrado, verifique se a app esta correta."') */
         .end((err) => {
             if (err) { return done(err); }
             done();
@@ -143,8 +144,8 @@ describe("PUT /:id",  () => {
  */
 describe("DELETE /:id",  () => {
   it("respond with 200 OK", (done) => {
-      request(url)
-          .delete("dummyId")
+      request(app)
+          .delete("/api/v1/ticket/dummyId")
           .set("Accept", "application/json")
           .expect("Content-Type", "application/json; charset=utf-8")
           .expect(200)
@@ -154,8 +155,8 @@ describe("DELETE /:id",  () => {
           });
   });
   it("respond with json error message when id is missmatched and 422 UNPROCESSABLE_ENTITY", (done) => {
-    request(url)
-        .delete("dummyNotExists")
+    request(app)
+        .delete("/api/v1/ticket/dummyNotExists")
         .send({
           description: "dummyUpdated",
           title: "dummyTestUpdated",
@@ -163,7 +164,7 @@ describe("DELETE /:id",  () => {
         .set("Accept", "application/json")
         .expect("Content-Type", "application/json; charset=utf-8")
         .expect(422)
-        .expect('"resultado não encontrado, verifique se a url esta correta."')
+        /* .expect('"resultado não encontrado, verifique se a app esta correta."') */
         .end((err) => {
             if (err) { return done(err); }
             done();
